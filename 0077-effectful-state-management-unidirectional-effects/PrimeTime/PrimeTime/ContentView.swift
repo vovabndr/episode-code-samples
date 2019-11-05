@@ -7,6 +7,8 @@ import SwiftUI
 struct AppState {
   var count = 0
   var favoritePrimes: [Int] = []
+  var lastSavedAt: Date?
+  var loadError: String?
   var loggedInUser: User? = nil
   var activityFeed: [Activity] = []
 
@@ -71,9 +73,20 @@ extension AppState {
   }
 }
 
+extension AppState: FavoritePrimesState {
+  var favoritePrimesView: FavoritePrimesState {
+    get { self }
+    set {
+      self.favoritePrimes = newValue.favoritePrimes
+      self.lastSavedAt = newValue.lastSavedAt
+      self.loadError = newValue.loadError
+    }
+  }
+}
+
 let appReducer: Reducer<AppState, AppAction> = combine(
   pullback(counterViewReducer, value: \.counterView, action: \.counterView),
-  pullback(favoritePrimesReducer, value: \.favoritePrimes, action: \.favoritePrimes)
+  pullback(favoritePrimesReducer, value: \.favoritePrimesView, action: \.favoritePrimes)
 )
 
 func activityFeed(
@@ -98,6 +111,14 @@ func activityFeed(
     case .favoritePrimes(.loadButtonTapped):
       break
     case .favoritePrimes(.saveButtonTapped):
+      break
+    case .favoritePrimes(.lastSavedAt):
+      break
+    case .favoritePrimes(.showError(_)):
+      break
+    case .favoritePrimes(.hideError):
+      break
+    case .favoritePrimes(.fail):
       break
     }
 
@@ -126,7 +147,7 @@ struct ContentView: View {
           "Favorite primes",
           destination: FavoritePrimesView(
             store: self.store.view(
-              value: { $0.favoritePrimes },
+              value: { $0.favoritePrimesView },
               action: { .favoritePrimes($0) }
             )
           )
