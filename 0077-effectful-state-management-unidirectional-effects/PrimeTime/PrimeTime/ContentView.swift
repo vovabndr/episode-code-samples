@@ -11,6 +11,10 @@ struct AppState {
   var loadError: String?
   var loggedInUser: User? = nil
   var activityFeed: [Activity] = []
+  var isPrimeModalShown: Bool = false
+  var alertNthPrime: PrimeAlert?
+  var isNthPrimeButtonDisabled: Bool = false
+
 
   struct Activity {
     let timestamp: Date
@@ -58,17 +62,23 @@ enum AppAction {
   }
 }
 
-extension AppState {
-  var counterView: CounterViewState {
-    get {
-      CounterViewState(
-        count: self.count,
-        favoritePrimes: self.favoritePrimes
-      )
+extension AppState: CounterViewState {
+  var primeModalState: (count: Int, favoritePrimes: [Int]) {
+    get { (count, favoritePrimes) }
+    set {
+      count = newValue.count
+      favoritePrimes = newValue.favoritePrimes
     }
+  }
+
+  var counterView: CounterViewState {
+    get { self }
     set {
       self.count = newValue.count
       self.favoritePrimes = newValue.favoritePrimes
+      self.isPrimeModalShown = newValue.isPrimeModalShown
+      self.alertNthPrime = newValue.alertNthPrime
+      self.isNthPrimeButtonDisabled = newValue.isNthPrimeButtonDisabled
     }
   }
 }

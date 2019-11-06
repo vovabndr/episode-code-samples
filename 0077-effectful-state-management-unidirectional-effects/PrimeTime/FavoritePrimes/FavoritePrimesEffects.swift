@@ -11,17 +11,15 @@ import ComposableArchitecture
 
 
 func saveEffect(favoritePrimes: [Int]) -> Effect<FavoritePrimesAction> {
-  return {
-    let data = try! JSONEncoder().encode(favoritePrimes)
-    let documentsPath = NSSearchPathForDirectoriesInDomains(
-      .documentDirectory, .userDomainMask, true
-      )[0]
-    let documentsUrl = URL(fileURLWithPath: documentsPath)
-    let favoritePrimesUrl = documentsUrl
-      .appendingPathComponent("favorite-primes.json")
-    try! data.write(to: favoritePrimesUrl)
-    return nil
-  }
+  let data = try! JSONEncoder().encode(favoritePrimes)
+  let documentsPath = NSSearchPathForDirectoriesInDomains(
+    .documentDirectory, .userDomainMask, true
+    )[0]
+  let documentsUrl = URL(fileURLWithPath: documentsPath)
+  let favoritePrimesUrl = documentsUrl
+    .appendingPathComponent("favorite-primes.json")
+  try! data.write(to: favoritePrimesUrl)
+  return syncEffect(nil)
 }
 
 func loadEffect() -> [Effect<FavoritePrimesAction>] {
@@ -34,13 +32,15 @@ func loadEffect() -> [Effect<FavoritePrimesAction>] {
   guard
     let data = try? Data(contentsOf: favoritePrimesUrl),
     let favoritePrimes = try? JSONDecoder().decode([Int].self, from: data)
-    else { return [{.showError("Nothing to load")}] }
+    else { return syncEffect(.showError("Nothing to load")) }
 
-  return [{ .loadedFavoritePrimes(favoritePrimes) }]
+  return syncEffect(.loadedFavoritePrimes(favoritePrimes))
 }
 
-let saveDateEffect: Effect<FavoritePrimesAction> = {
-  .lastSavedAt
+let saveDateEffect: Effect<FavoritePrimesAction> = { cb in
+  cb(.lastSavedAt)
 }
 
-let failLoadEffect: Effect<FavoritePrimesAction> = { .showError("Nothing to load") }
+let failLoadEffect: Effect<FavoritePrimesAction> = { cb in
+  cb(.showError("Nothing to load"))
+}

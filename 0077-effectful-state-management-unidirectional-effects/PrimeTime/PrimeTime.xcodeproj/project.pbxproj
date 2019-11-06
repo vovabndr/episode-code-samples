@@ -41,6 +41,7 @@
 		DCF0C62C2326040D008B45A0 /* PrimeModal.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C62B2326040D008B45A0 /* PrimeModal.swift */; };
 		DCF0C62E23260414008B45A0 /* Counter.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF0C62D23260414008B45A0 /* Counter.swift */; };
 		FF0CA5B923723B09009376DA /* FavoritePrimesEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0CA5B823723B09009376DA /* FavoritePrimesEffects.swift */; };
+		FF0CA5BB23724B78009376DA /* CounterEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF0CA5BA23724B78009376DA /* CounterEffect.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -226,6 +227,7 @@
 		DCF0C62B2326040D008B45A0 /* PrimeModal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimeModal.swift; sourceTree = "<group>"; };
 		DCF0C62D23260414008B45A0 /* Counter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Counter.swift; sourceTree = "<group>"; };
 		FF0CA5B823723B09009376DA /* FavoritePrimesEffects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritePrimesEffects.swift; sourceTree = "<group>"; };
+		FF0CA5BA23724B78009376DA /* CounterEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterEffect.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -402,6 +404,7 @@
 				DCF0C5C023260348008B45A0 /* Counter.h */,
 				DC29217322FB231F006090DF /* WolframAlpha.swift */,
 				DCF0C62D23260414008B45A0 /* Counter.swift */,
+				FF0CA5BA23724B78009376DA /* CounterEffect.swift */,
 				DCF0C5C123260348008B45A0 /* Info.plist */,
 			);
 			path = Counter;
@@ -880,6 +883,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DCF0C62E23260414008B45A0 /* Counter.swift in Sources */,
+				FF0CA5BB23724B78009376DA /* CounterEffect.swift in Sources */,
 				CAD67E2023329887000C7787 /* WolframAlpha.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

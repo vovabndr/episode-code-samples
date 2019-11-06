@@ -2,7 +2,7 @@ import Foundation
 
 private let wolframAlphaApiKey = "6H69Q3-828TKQJ4EP"
 
-struct WolframAlphaResult: Decodable {
+private struct WolframAlphaResult: Decodable {
   let queryresult: QueryResult
 
   struct QueryResult: Decodable {
@@ -36,7 +36,7 @@ func nthPrime(_ n: Int, callback: @escaping (Int?) -> Void) -> Void {
   }
 }
 
-func wolframAlpha(query: String, callback: @escaping (WolframAlphaResult?) -> Void) -> Void {
+private func wolframAlpha(query: String, callback: @escaping (WolframAlphaResult?) -> Void) -> Void {
   var components = URLComponents(string: "https://api.wolframalpha.com/v2/query")!
   components.queryItems = [
     URLQueryItem(name: "input", value: query),

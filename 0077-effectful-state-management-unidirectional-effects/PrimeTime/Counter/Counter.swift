@@ -5,31 +5,50 @@ import SwiftUI
 public enum CounterAction {
   case decrTapped
   case incrTapped
+  case getPrime
+  case show(prime: Int?)
 }
 
-public func counterReducer(state: inout Int, action: CounterAction) -> [Effect<CounterAction>] {
+public func counterReducer(state: inout CounterViewState, action: CounterAction) -> [Effect<CounterAction>] {
   switch action {
   case .decrTapped:
-    state -= 1
+    state.count -= 1
     return []
 
   case .incrTapped:
-    state += 1
+    state.count += 1
+    return []
+
+  case .getPrime:
+    state.isNthPrimeButtonDisabled = true
+    return [getNthPrime(number: state.count)]
+
+  case let .show(prime: prime):
+    state.alertNthPrime = prime.map(PrimeAlert.init(prime:))
+    state.isNthPrimeButtonDisabled = false
+
     return []
   }
 }
 
 public let counterViewReducer = combine(
-  pullback(counterReducer, value: \CounterViewState.count, action: \CounterViewAction.counter),
-  pullback(primeModalReducer, value: \.self, action: \.primeModal)
+  pullback(counterReducer, value: \.self, action: \CounterViewAction.counter),
+  pullback(primeModalReducer, value: \.primeModalState, action: \CounterViewAction.primeModal)
 )
 
-struct PrimeAlert: Identifiable {
+public struct PrimeAlert: Identifiable {
   let prime: Int
-  var id: Int { self.prime }
+  public var id: Int { self.prime }
 }
 
-public typealias CounterViewState = (count: Int, favoritePrimes: [Int])
+public protocol CounterViewState {
+  var count: Int { get set }
+  var favoritePrimes: [Int] { get set }
+  var isPrimeModalShown: Bool { get set }
+  var alertNthPrime: PrimeAlert? { get set }
+  var isNthPrimeButtonDisabled: Bool { get set }
+  var primeModalState: (count: Int, favoritePrimes: [Int]) { get set }
+}
 
 public enum CounterViewAction {
   case counter(CounterAction)
@@ -78,7 +97,7 @@ public struct CounterView: View {
       Button("Is this prime?") { self.isPrimeModalShown = true }
       Button(
         "What is the \(ordinal(self.store.value.count)) prime?",
-        action: self.nthPrimeButtonAction
+        action: { self.store.send(.counter(.getPrime)) }
       )
       .disabled(self.isNthPrimeButtonDisabled)
     }
@@ -92,20 +111,17 @@ public struct CounterView: View {
             action: { .primeModal($0) }
         )
       )
+      }
+    .onReceive(self.store.$value) {
+      self.isPrimeModalShown = $0.isPrimeModalShown
+      self.alertNthPrime = $0.alertNthPrime
+      self.isNthPrimeButtonDisabled = $0.isNthPrimeButtonDisabled
     }
     .alert(item: self.$alertNthPrime) { alert in
       Alert(
         title: Text("The \(ordinal(self.store.value.count)) prime is \(alert.prime)"),
         dismissButton: .default(Text("Ok"))
       )
-    }
-  }
-
-  func nthPrimeButtonAction() {
-    self.isNthPrimeButtonDisabled = true
-    nthPrime(self.store.value.count) { prime in
-      self.alertNthPrime = prime.map(PrimeAlert.init(prime:))
-      self.isNthPrimeButtonDisabled = false
     }
   }
 }
